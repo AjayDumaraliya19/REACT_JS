@@ -1,0 +1,23 @@
+{
+  "posts": [
+    {
+      "title": "Autem error assumend",
+      "author": "Aut et qui est et pr",
+      "id": 1
+    },
+    {
+      "title": "A ut beatae cillum n",
+      "author": "Eum vitae rerum sunt",
+      "id": 2
+    },
+    {
+      "title": "Qui sed ullam odit s",
+      "author": "Autem velit sit sun",
+      "id": 3
+    }
+  ],
+  "comments": [],
+  "profile": {
+    "name": "typicode"
+  }
+}
