@@ -5,12 +5,14 @@ import sweetAlt from "sweetalert2";
 
 function App() {
   const [data, setdata] = useState([]);
+  const [update, setUpdate] = useState({});
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const title = useRef();
   const author = useRef();
 
   useEffect(() => {
-    axios.get("http://localhost:3000/posts").then((res) => {
+    axios.get("http://localhost:3001/posts").then((res) => {
       setdata(res.data || []);
     });
   }, []);
@@ -21,7 +23,7 @@ function App() {
       author: author.current.value,
     };
 
-    axios.post("http://localhost:3000/posts", result).then((res) => {
+    axios.post("http://localhost:3001/posts", result).then((res) => {
       setdata([...data, result]);
       sweetAlt.fire({
         title: "Added..!",
@@ -32,15 +34,42 @@ function App() {
   };
 
   const dataDelete = (id) => {
-    axios.delete(`http://localhost:3000/posts/${id}`).then(() => {
-      console.log(id);
-      setdata(data.filter((e) => e.id !== id));
+    axios.delete(`http://localhost:3001/posts/${id}`).then(() => {
+      setdata(data.filter((item) => item.id !== id));
       sweetAlt.fire({
         title: "Deleted..!",
         text: `Post with ID ${id} has been deleted!`,
         icon: "error",
       });
     });
+  };
+
+  const updatData = (id, ind) => {
+    const final = data[ind];
+    setUpdate(final);
+    setIsUpdating(true);
+  };
+
+  const finalUpdate = (e) => {
+    setUpdate({ ...update, [e.target.name]: e.target.value });
+  };
+
+  const final = () => {
+    axios.put(`http://localhost:3001/posts/${update.id}`, update).then(() => {
+      const updatedData = [...data];
+      const index = updatedData.findIndex((item) => item.id === update.id);
+      updatedData[index] = update;
+      setdata(updatedData);
+      setIsUpdating(false);
+    });
+  };
+
+  const handleClick = () => {
+    if (isUpdating) {
+      final();
+    } else {
+      dataSubmit();
+    }
   };
 
   return (
@@ -54,6 +83,8 @@ function App() {
               name="title"
               ref={title}
               placeholder="Title"
+              value={update.title || ""}
+              onChange={finalUpdate}
             />
             <input
               className="inputField"
@@ -61,21 +92,23 @@ function App() {
               name="author"
               ref={author}
               placeholder="Author"
+              value={update.author || ""}
+              onChange={finalUpdate}
             />
           </div>
-          <button className="btn" onClick={dataSubmit}>
-            Submit
+          <button className="btn" onClick={handleClick}>
+            {isUpdating ? "Update" : "Submit"}
           </button>
         </div>
-        <hr />
 
         <div className="">
           {data?.map((value, index) => {
             return (
-              <div>
+              <div key={index}>
                 <h1>{value.title}</h1>
                 <h3>{value.author}</h3>
                 <button onClick={() => dataDelete(value.id)}>Delete</button>
+                <button onClick={() => updatData(value.id, index)}></button>
               </div>
             );
           })}
