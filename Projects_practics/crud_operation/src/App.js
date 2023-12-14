@@ -64,6 +64,10 @@ function App() {
     });
   };
 
+  /** When using the splice mathod to findindex
+   * setData(data.spice())
+   */
+
   const handleClick = () => {
     if (isUpdating) {
       final();
@@ -108,7 +112,7 @@ function App() {
                 <h1>{value.title}</h1>
                 <h3>{value.author}</h3>
                 <button onClick={() => dataDelete(value.id)}>Delete</button>
-                <button onClick={() => updatData(value.id, index)}></button>
+                <button onClick={() => updatData(value.id, index)}>Update</button>
               </div>
             );
           })}
